@@ -6,7 +6,10 @@ jobservice/test
 *.log
 Deploy/local/data
 Deploy/local/log
-harborUI
+*.pyc
+jobservice/test
+Deploy/local/data
+Deploy/local/log
 jobservice/jobservice
 
 # ref:
