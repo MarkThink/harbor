@@ -80,7 +80,7 @@ func init() {
 		verifyRemoteCert = "on"
 	}
 
-	configPath := os.Getenv("CONFIG_PATH")
+	configPath := os.Getenv("JOB_CONFIG_PATH")
 	if len(configPath) != 0 {
 		log.Infof("Config path: %s", configPath)
 		beego.LoadAppConfig("ini", configPath)

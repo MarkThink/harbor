@@ -1,0 +1,45 @@
+version: 0.1
+log:
+  level: debug
+  fields:
+    service: registry
+storage:
+    cache:
+        layerinfo: inmemory
+    filesystem:
+        rootdirectory: /storage
+    maintenance:
+        uploadpurging:
+            enabled: false
+  # oss:
+    # accesskeyid: DdgTu59uRsUVSIud
+    # accesskeysecret: oBOGeT3X3R1kdtVmLcoIr0sg51AhIo
+    # bucket: caicloud-registry-canary
+    # region: oss-cn-hangzhou
+  # oss:
+  #   accesskeyid: 97GHo6PyqZmv36tS
+  #   accesskeysecret: 3wpwVmP7nvaSYiP2disuZD3iRtYb0f
+  #   bucket: rays
+  #   region: oss-cn-hangzhou
+    delete:
+        enabled: true
+http:
+    addr: :5000
+    secret: placeholder
+    debug:
+        addr: localhost:5001
+auth:
+  token:
+    issuer: registry-token-issuer
+    realm: https://registry.51yixiao.com/service/token
+    rootcertbundle: /etc/registry/root.crt
+    service: token-service
+
+notifications:
+  endpoints:
+      - name: harbor
+        disabled: false
+        url: http://ui/service/notifications
+        timeout: 500ms
+        threshold: 5
+        backoff: 1s

@@ -1,0 +1,92 @@
+version: '2'
+services:
+  log:
+    build: ../log/
+    volumes:
+      - /works/goProject/src/github.com/vmware/harbor/Deploy/local/log:/var/log/docker/
+    ports:
+      - 1514:514
+  registry:
+    image: library/registry:2.4.0
+    volumes:
+      - /works/goProject/src/github.com/vmware/harbor/Deploy/local/data/registry:/storage
+      - /works/goProject/src/github.com/vmware/harbor/Deploy/local/config/registry:/etc/registry
+    environment:
+      - GODEBUG=netdns=cgo
+    ports:
+      - 5000:5000
+      - 5001:5001
+    command:
+      ["serve", "/etc/registry/config.yml"]
+    depends_on:
+      - log
+    logging:
+      driver: "syslog"
+      options:  
+        syslog-address: "tcp://127.0.0.1:1514"
+        tag: "registry"
+  mysql:
+    build: ../db/
+    volumes:
+      - /works/goProject/src/github.com/vmware/harbor/Deploy/local/data/mysql:/var/lib/mysql
+      - /works/goProject/src/github.com/vmware/harbor/Deploy/db/registry.sql:/tmp/r.sql
+    env_file:
+      - ./config/db/env
+    ports:
+      - 3306:3306
+    depends_on:
+      - log
+    logging:
+      driver: "syslog"
+      options:  
+        syslog-address: "tcp://127.0.0.1:1514"
+        tag: "mysql"
+#  ui:
+#    build:
+#      context: ../
+#      dockerfile: Dockerfile.ui
+#    env_file:
+#      - ./config/ui/env
+#    volumes:
+#      - /works/goProject/src/github.com/vmware/harbor/Deploy/local/config/ui/app.conf:/etc/ui/app.conf
+#      - /works/goProject/src/github.com/vmware/harbor/Deploy/local/config/ui/private_key.pem:/etc/ui/private_key.pem
+#    depends_on:
+#      - log
+#    logging:
+#      driver: "syslog"
+#      options:
+#        syslog-address: "tcp://127.0.0.1:1514"
+#        tag: "ui"
+#  jobservice:
+#    build:
+#      context: ../
+#      dockerfile: Dockerfile.job
+#    env_file:
+#      - ./config/jobservice/env
+#    volumes:
+#      - /works/goProject/src/github.com/vmware/harbor/Deploy/local/data/job_logs:/var/log/jobs
+#      - /works/goProject/src/github.com/vmware/harbor/Deploy/local/config/jobservice/app.conf:/etc/jobservice/app.conf
+#    depends_on:
+#      - ui
+#    logging:
+#      driver: "syslog"
+#      options:
+#        syslog-address: "tcp://127.0.0.1:1514"
+#        tag: "jobservice"
+  proxy:
+    image: library/nginx:1.9.0
+    volumes:
+      - /works/goProject/src/github.com/vmware/harbor/Deploy/local/config/nginx:/etc/nginx
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - mysql
+      - registry
+#      - ui
+      - log
+    logging:
+      driver: "syslog"
+      options:  
+        syslog-address: "tcp://127.0.0.1:1514"
+        tag: "proxy"

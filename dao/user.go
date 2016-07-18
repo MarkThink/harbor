@@ -23,6 +23,7 @@ import (
 	"github.com/vmware/harbor/utils"
 
 	"github.com/vmware/harbor/utils/log"
+	"github.com/astaxie/beego/orm"
 )
 
 // GetUser ...
@@ -240,3 +241,73 @@ func ChangeUserProfile(user models.User) error {
 	}
 	return nil
 }
+
+//Update user token
+func ChangeUserToken(UserToken models.UserToken) (*models.User, error) {
+
+	sql := `select u.* from user_token t inner join user u on u.user_id=t.user_id where t.md5_token = ?`
+
+	log.Warning("select user:", sql)
+
+	o := GetOrmer()
+	var user models.User
+
+	log.Warning("user token:", UserToken.Token)
+	log.Warning("user md5 token:", UserToken.Md5Token)
+	log.Warning("user id:", UserToken.UserId)
+
+	if err := o.Raw(sql, UserToken.Md5Token).QueryRow(&user); err != nil {
+
+		UserID := int64(UserToken.UserId)
+		if err == orm.ErrNoRows {
+			if UserToken.Token != "" {
+				//query user info
+				sql := `select * from user_token where user_id=?`
+				var userToken models.UserToken
+				//MD5
+				//h := md5.New()
+				//h.Write([]byte(UserToken.Token))
+				//md5_token := hex.EncodeToString(h.Sum(nil))
+				//
+				//log.Warning("go md5:", md5_token)
+				err = o.Raw(sql, UserToken.UserId).QueryRow(&userToken)
+
+				if (err == orm.ErrNoRows && UserToken.UserId != 0) {
+					p, err := o.Raw("insert into user_token (user_id, token,md5_token) values (?, ?, ?)").Prepare()
+					if err != nil {
+						return nil, err
+					}
+					defer p.Close()
+
+					r,err := p.Exec(UserToken.UserId, UserToken.Token, UserToken.Md5Token)
+
+					if err != nil {
+						return nil, err
+					}
+
+					UserID,_ = r.LastInsertId()
+					log.Warning("InsertID:", UserID)
+
+				}else{
+					_, err = o.Raw(`update user_token set token = ?, md5_token = ? where user_id = ?`, userToken.Token, UserToken.Md5Token, UserToken.UserId).Exec()
+				}
+
+				//query user info
+				sql = `select * from user where user_id=?`
+
+				o.Raw(sql, UserID).QueryRow(&user)
+
+				log.Warning("user info:", sql)
+
+				return &user,nil
+			}
+		}
+
+	}
+
+	log.Warning("userid:", user.UserID)
+	log.Warning("username:", user.Username)
+
+	return &user,nil
+}
+
