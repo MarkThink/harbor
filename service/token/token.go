@@ -44,6 +44,9 @@ func (h *Handler) Get() {
 	scopes := h.GetStrings("scope")
 	access := GetResourceActions(scopes)
 	log.Infof("request url: %v", request.URL.String())
+	log.Infof("request service: %+v", service)
+	log.Infof("request scope: %+v", scopes)
+	log.Infof("request access: %+v", access)
 
 	if svc_utils.VerifySecret(request) {
 		log.Debugf("Will grant all access as this request is from job service with legal secret.")
@@ -52,6 +55,7 @@ func (h *Handler) Get() {
 		username, password, _ = request.BasicAuth()
 		authenticated := authenticate(username, password)
 
+		log.Info("authenticated:", authenticated)
 		if len(scopes) == 0 && !authenticated {
 			log.Info("login request with invalid credentials")
 			h.CustomAbort(http.StatusUnauthorized, "")
@@ -77,6 +81,8 @@ func (h *Handler) serveToken(username, service string, access []*token.ResourceA
 	tk["expires_in"] = expiresIn
 	tk["issued_at"] = issuedAt.Format(time.RFC3339)
 	h.Data["json"] = tk
+
+	log.Infof("serveToken: %+v", tk)
 	h.ServeJSON()
 }
 

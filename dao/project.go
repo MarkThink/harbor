@@ -46,6 +46,13 @@ func AddProject(project models.Project) (int64, error) {
 		return 0, err
 	}
 
+	//添加项目中文支持
+	res, err := o.Raw("insert into project_desc (project_id, name) values (?, ?)",projectID,project.NameChinese).Exec()
+	if err == nil {
+		num, _ := res.RowsAffected()
+		fmt.Println("mysql row affected nums: ", num)
+	}
+
 	if err = AddProjectMember(projectID, project.OwnerID, models.PROJECTADMIN); err != nil {
 		return projectID, err
 	}

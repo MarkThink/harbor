@@ -10,7 +10,7 @@ create table access (
  primary key (access_id)
 );
 
-insert into access (access_code, comment) values 
+insert into access (access_code, comment) values
 ('M', 'Management access for project'),
 ('R', 'Read access for project'),
 ('W', 'Write access for project'),
@@ -30,7 +30,7 @@ role mask is used for future enhancement when a project member can have multi-ro
 currently set to 0
 */
 
-insert into role (role_code, name) values 
+insert into role (role_code, name) values
 ('MDRWS', 'projectAdmin'),
 ('RWS', 'developer'),
 ('RS', 'guest');
@@ -54,10 +54,10 @@ create table user (
  UNIQUE (email)
 );
 
-insert into user (username, email, password, realname, comment, deleted, sysadmin_flag, creation_time, update_time) values 
+insert into user (username, email, password, realname, comment, deleted, sysadmin_flag, creation_time, update_time) values
 ('admin', 'admin@example.com', '', 'system admin', 'admin user',0, 1, NOW(), NOW()),
 ('anonymous', 'anonymous@example.com', '', 'anonymous user', 'anonymous user', 1, 0, NOW(), NOW());
-                                                                          
+
 create table project (
  project_id int NOT NULL AUTO_INCREMENT,
  owner_id int NOT NULL,
@@ -71,7 +71,7 @@ create table project (
  UNIQUE (name)
 );
 
-insert into project (owner_id, name, creation_time, update_time, public) values 
+insert into project (owner_id, name, creation_time, update_time, public) values
 (1, 'library', NOW(), NOW(), 1);
 
 create table project_member (
@@ -93,9 +93,9 @@ create table access_log (
  log_id int NOT NULL AUTO_INCREMENT,
  user_id int NOT NULL,
  project_id int NOT NULL,
- repo_name varchar (256), 
+ repo_name varchar (256),
  repo_tag varchar (128),
- GUID varchar(64), 
+ GUID varchar(64),
  operation varchar(20) NOT NULL,
  op_time timestamp,
  primary key (log_id),
@@ -146,7 +146,7 @@ create table replication_job (
  PRIMARY KEY (id),
  INDEX policy (policy_id)
  );
- 
+
 create table properties (
  k varchar(64) NOT NULL,
  v varchar(128) NOT NULL,
@@ -172,3 +172,17 @@ create table user_token (
   token varchar(128) BINARY NOT NULL,
   md5_token varchar(32) BINARY NOT NULL
 );
+
+-- create a table for setting customer for project
+CREATE TABLE `customer` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '客户ID',
+  `name` varchar(32) DEFAULT NULL COMMENT '客户名称',
+  `tag` varchar(32) DEFAULT NULL COMMENT '客户标签-用于镜像过滤',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+
+-- create a table for setting desc for project
+CREATE TABLE `project_desc` (
+  `project_id` int(11) DEFAULT NULL COMMENT '项目ID',
+  `name` varchar(32) DEFAULT NULL COMMENT '项目中文名'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -1,0 +1,89 @@
+version: '2'
+services:
+  log:
+    build: ./log/
+    volumes:
+      - /Users/zhangjinglong/harbor/Deploy/local/log:/var/log/docker/
+    ports:
+      - 1514:514
+  registry:
+    image: library/registry:2.4.0
+    volumes:
+      - /Users/zhangjinglong/harbor/Deploy/local/data/registry:/storage
+      - /Users/zhangjinglong/harbor/Deploy/config/registry:/etc/registry
+    environment:
+      - GODEBUG=netdns=cgo
+    ports:
+      - 5001:5001
+    command:
+      ["serve", "/etc/registry/config.yml"]
+    depends_on:
+      - log
+    logging:
+      driver: "syslog"
+      options:
+        syslog-address: "tcp://127.0.0.1:1514"
+        tag: "registry"
+  mysql:
+    build: ./db/
+    volumes:
+      - /Users/zhangjinglong/harbor/Deploy/local/data/mysql:/var/lib/mysql
+      - /Users/zhangjinglong/harbor/Deploy/db/registry.sql:/tmp/r.sql
+    env_file:
+      - ./config/db/env
+    depends_on:
+      - log
+    logging:
+      driver: "syslog"
+      options:
+        syslog-address: "tcp://127.0.0.1:1514"
+        tag: "mysql"
+  ui:
+    build:
+      context: ../
+      dockerfile: Dockerfile.ui
+    env_file:
+      - ./config/ui/env
+    volumes:
+      - /Users/zhangjinglong/harbor/Deploy/config/ui/app.conf:/etc/ui/app.conf
+      - /Users/zhangjinglong/harbor/Deploy/config/ui/private_key.pem:/etc/ui/private_key.pem
+    # depends_on:
+      # - log
+    # logging:
+      # driver: "syslog"
+      # options:
+        # syslog-address: "tcp://127.0.0.1:1514"
+        # tag: "ui"
+  jobservice:
+    build:
+      context: ../
+      dockerfile: Dockerfile.job
+    env_file:
+      - ./config/jobservice/env
+    volumes:
+      - /Users/zhangjinglong/harbor/Deploy/local/data/job_logs:/var/log/jobs
+      - /Users/zhangjinglong/harbor/Deploy/config/jobservice/app.conf:/etc/jobservice/app.conf
+    # depends_on:
+      # - ui
+    # logging:
+      # driver: "syslog"
+      # options:
+        # syslog-address: "tcp://127.0.0.1:1514"
+        # tag: "jobservice"
+  proxy:
+    image: library/nginx:1.9
+    volumes:
+      - /Users/zhangjinglong/harbor/Deploy/config/nginx:/etc/nginx
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - mysql
+      - registry
+      - ui
+      - log
+    logging:
+      driver: "syslog"
+      options:
+        syslog-address: "tcp://127.0.0.1:1514"
+        tag: "proxy"

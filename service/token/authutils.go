@@ -33,8 +33,8 @@ import (
 
 const (
 	issuer     = "registry-token-issuer"
-	//privateKey = "/etc/ui/private_key.pem"
-	privateKey = "/works/goProject/src/github.com/vmware/harbor/Deploy/local/config/ui/private_key.pem"
+	privateKey = "/etc/ui/private_key.pem"
+	//privateKey = "/works/goProject/src/github.com/vmware/harbor/Deploy/local/config/ui/private_key.pem"
 	expiration = 5 //minute
 )
 
@@ -156,11 +156,14 @@ func makeTokenCore(issuer, subject, audience string, expiration int,
 		SigningAlg: "RS256",
 		KeyID:      signingKey.KeyID(),
 	}
+	log.Infof("joseHeader: %+v", joseHeader)
 
 	jwtID, err := randString(16)
 	if err != nil {
 		return nil, 0, nil, fmt.Errorf("Error to generate jwt id: %s", err)
 	}
+
+	log.Info("jwtID:", jwtID)
 
 	now := time.Now().UTC()
 	issuedAt = &now
@@ -176,6 +179,7 @@ func makeTokenCore(issuer, subject, audience string, expiration int,
 		JWTID:      jwtID,
 		Access:     access,
 	}
+	log.Infof("claimSet: %+v", claimSet)
 
 	var joseHeaderBytes, claimSetBytes []byte
 
@@ -185,18 +189,26 @@ func makeTokenCore(issuer, subject, audience string, expiration int,
 	if claimSetBytes, err = json.Marshal(claimSet); err != nil {
 		return nil, 0, nil, fmt.Errorf("unable to marshal claim set: %s", err)
 	}
+	log.Info("joseHeader json:", joseHeaderBytes)
+	log.Info("claimSet json:", claimSetBytes)
 
 	encodedJoseHeader := base64UrlEncode(joseHeaderBytes)
 	encodedClaimSet := base64UrlEncode(claimSetBytes)
 	payload := fmt.Sprintf("%s.%s", encodedJoseHeader, encodedClaimSet)
+
+	log.Info("payload:", payload)
 
 	var signatureBytes []byte
 	if signatureBytes, _, err = signingKey.Sign(strings.NewReader(payload), crypto.SHA256); err != nil {
 		return nil, 0, nil, fmt.Errorf("unable to sign jwt payload: %s", err)
 	}
 
+	log.Info("signatureBytes:",signatureBytes)
+
 	signature := base64UrlEncode(signatureBytes)
+	log.Info("signature:", signature)
 	tokenString := fmt.Sprintf("%s.%s", payload, signature)
+	log.Info("tokenString:", tokenString)
 	t, err = token.NewToken(tokenString)
 	return
 }

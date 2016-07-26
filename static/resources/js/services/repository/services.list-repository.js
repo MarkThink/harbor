@@ -3,9 +3,9 @@
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
-        
+
         http://www.apache.org/licenses/LICENSE-2.0
-        
+
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,25 +14,26 @@
 */
 (function() {
   'use strict';
- 
+
    angular
     .module('harbor.services.repository')
     .factory('ListRepositoryService', ListRepositoryService);
-  
+
   ListRepositoryService.$inject = ['$http', '$log'];
-  
+
   function ListRepositoryService($http, $log) {
-    
+
     return ListRepository;
-    
-    function ListRepository(projectId, q) {      
-      $log.info('list repositories:' + projectId + ', q:' + q);
-  
+
+    function ListRepository(projectId, q, pageId) {
+      $log.info('list repositories:' + projectId + ', q:' + q  + ', pageId:' + pageId);
+
       return $http
         .get('/api/repositories', {
           'params':{
             'project_id': projectId,
-            'q': q
+            'q': q,
+            'page_id': pageId
           }
       });
     }

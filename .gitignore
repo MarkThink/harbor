@@ -1,9 +1,10 @@
-harbor
-Deploy/local/data
-Deploy/local/log
-*.pyc
-.idea
 *.log
 harborUI
 jobservice/jobservice
 jobservice/test
+.idea
+*.log
+Deploy/local/data
+Deploy/local/log
+harborUI
+jobservice/jobservice

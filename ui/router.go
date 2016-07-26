@@ -73,6 +73,15 @@ func initRouters() {
 	beego.Router("/api/repositories/labels/repo", &api.RepositoryAPI{}, "get:GetRepoNames")
 	beego.Router("/api/repositories/labels", &api.RepositoryAPI{}, "delete:DeleteLabel")
 
+	beego.Router("/api/customer", &api.CustomerController{}, "get:GetListCustomer")
+	beego.Router("/api/customer", &api.CustomerController{}, "post:PostCustomer")
+	beego.Router("/api/customer/?:id", &api.CustomerController{}, "get:GetOneCustomer")
+	beego.Router("/api/customer", &api.CustomerController{}, "put:UpdateCustomer")
+	beego.Router("/api/customer/?:id", &api.CustomerController{}, "delete:DeleteCustomer")
+
+	//根据项目ID修改项目中文名称
+	beego.Router("/api/project_desc", &api.ProjectDescController{}, "put:UpdateProject")
+
 	beego.Router("/api/repositories/manifests", &api.RepositoryAPI{}, "get:GetManifests")
 	beego.Router("/api/jobs/replication/", &api.RepJobAPI{}, "get:List")
 	beego.Router("/api/jobs/replication/:id([0-9]+)", &api.RepJobAPI{})

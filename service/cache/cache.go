@@ -28,9 +28,9 @@ import (
 
 var (
 	// Cache is the global cache in system.
-	Cache    cache.Cache
-	endpoint string
-	username string
+	Cache             cache.Cache
+	endpoint          string
+	username          string
 )
 
 const catalogKey string = "catalog"
@@ -94,6 +94,7 @@ func RefreshCatalogCache() error {
 func GetRepoFromCache() ([]string, error) {
 
 	result := Cache.Get(catalogKey)
+	log.Infof("catalog result: %+v",result)
 	if result == nil {
 		err := RefreshCatalogCache()
 		if err != nil {
