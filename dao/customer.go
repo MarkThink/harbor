@@ -92,3 +92,32 @@ func DeleteCustomer(id int) (err error) {
 	}
 	return err
 }
+
+//获取客户数量
+func GetCustomerCount() (count int) {
+	o := GetOrmer()
+	p := []models.Customer{}
+	o.Raw("select * from customer").QueryRows(&p)
+	return len(p)
+}
+
+//增加客户项目过滤
+func GetCustomerRepoList(repoList []string, tag string) ([]string) {
+	o := GetOrmer()
+
+	var resp []string
+
+	sql := "select * from repo_label where repoName=? and label=?"
+
+	p := models.RepoLabel{}
+
+	for _, r := range repoList {
+
+		if err := o.Raw(sql,r,tag).QueryRow(&p); err != nil {
+			continue
+		}
+		resp = append(resp, r)
+	}
+	return resp
+}
+

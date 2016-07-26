@@ -58,6 +58,7 @@ func (s *StatisticAPI) Get() {
 	proMap["my_repo_count"] = 0
 	proMap["public_project_count"] = 0
 	proMap["public_repo_count"] = 0
+	proMap["total_customer_count"] = dao.GetCustomerCount()
 	var publicProjects []models.Project
 	publicProjects, err = dao.GetPublicProjects("")
 	if err != nil {

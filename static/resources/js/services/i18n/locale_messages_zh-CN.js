@@ -74,6 +74,7 @@ var locale_messages = {
   'public_repo_count': '公开镜像仓库',
   'total_project_count': '全部项目',
   'total_repo_count': '全部镜像仓库',
+  'total_customer_count': '全部客户',
   'top_10_repositories': 'Top 10 镜像仓库',
   'repository_name': '镜像仓库名',
   'size': '大小',

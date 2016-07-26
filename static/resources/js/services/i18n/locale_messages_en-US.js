@@ -73,6 +73,7 @@ var locale_messages = {
   'public_project_count': 'Public Projects',
   'public_repo_count': 'Public Repositories',
   'total_project_count': 'Total Projects',
+  'total_customer_count': 'Total Customer',
   'total_repo_count': 'Total Repositories',
   'top_10_repositories': 'Top 10 Repositories',
   'repository_name': 'Repository Name',

@@ -62,6 +62,20 @@ type repoReq struct {
 
 // Get ...
 func (ra *RepositoryAPI) Get() {
+	//增加客户ID过滤镜像
+	var tag string = ""
+	customerId, err := ra.GetInt("cid")
+	log.Info("customerid:",customerId)
+
+	if customerId != 0 {
+		customer, err := dao.GetCustomerById(customerId)
+		if  err == nil {
+			tag = customer.Tag
+		}
+	}
+
+	log.Info("tag:", tag)
+
 	projectID, err := ra.GetInt64("project_id")
  	if err != nil {
  		log.Errorf("Failed to get project id, error: %v", err)
@@ -114,7 +128,11 @@ func (ra *RepositoryAPI) Get() {
 		ra.RenderError(http.StatusInternalServerError, "internal sever error")
 	}
 
-	log.Errorf("repoList: %v", repoList)
+	log.Infof("repoList: %v", repoList)
+
+	if tag != "" {
+		repoList = dao.GetCustomerRepoList(repoList, tag)
+	}
 
 	projectName := p.Name
 	q := ra.GetString("q")
@@ -132,6 +150,7 @@ func (ra *RepositoryAPI) Get() {
 		}
 		ra.Data["json"] = getSubPage(resp, pageNum)
 	} else if len(projectName) > 0 {
+		log.Infof("projectList: %+v", repoList)
 		for _, r := range repoList {
 			if strings.Contains(r, "/") && r[0:strings.LastIndex(r, "/")] == projectName {
 				resp = append(resp, r)
