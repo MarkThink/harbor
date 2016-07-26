@@ -70,7 +70,7 @@ func (ra *RepositoryAPI) Get() {
 	if customerId != 0 {
 		customer, err := dao.GetCustomerById(customerId)
 		if  err == nil {
-			tag = customer.Tag
+			tag = customer.Name
 		}
 	}
 

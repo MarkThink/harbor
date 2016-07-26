@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"github.com/vmware/harbor/dao"
 	"github.com/vmware/harbor/utils/log"
+	"fmt"
+	"regexp"
 )
 
 type CustomerController struct {
@@ -19,6 +21,8 @@ type CustomerReq struct {
 }
 
 
+const customerNameMaxLen int = 30
+const customerNameMinLen int = 4
 /*
 	Method: Post
  	https://registry.51yixiao.com/api/customer
@@ -34,6 +38,13 @@ func (c *CustomerController) PostCustomer() {
 	name := req.Name
 	if len(name) == 0 {
 		c.CustomAbort(http.StatusBadRequest, "name is nil")
+	}
+
+	err := validateCustomerReq(name)
+	if err != nil {
+		log.Errorf("Invalid customer request, error: %v", err)
+		c.RenderError(http.StatusBadRequest, fmt.Sprintf("invalid request: %v", err))
+		return
 	}
 
 	tag := req.Tag
@@ -136,4 +147,17 @@ func (c *CustomerController) DeleteCustomer() {
 		c.Data["json"] = err.Error()
 	}
 	c.ServeJSON()
+}
+
+func validateCustomerReq(customer_name string) error {
+
+	if isIllegalLength(customer_name, customerNameMinLen, customerNameMaxLen) {
+		return fmt.Errorf("Customer name is illegal in length. (greater than 4 or less than 30)")
+	}
+	validName := regexp.MustCompile(`^[a-z0-9](?:-*[a-z0-9])*(?:[._][a-z0-9](?:-*[a-z0-9])*)*$`)
+	legal := validName.MatchString(customer_name)
+	if !legal {
+		return fmt.Errorf("Customer name is not in lower case or contains illegal characters!")
+	}
+	return nil
 }
