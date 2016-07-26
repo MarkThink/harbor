@@ -2,8 +2,6 @@ FROM gobase
 
 MAINTAINER dxwsker@qq.com
 
-
-
 COPY . /go/src/github.com/vmware/harbor
 #golang.org is blocked in China
 COPY ./vendor/golang.org /go/src/golang.org

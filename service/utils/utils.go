@@ -26,6 +26,8 @@ import (
 func VerifySecret(r *http.Request) bool {
 	secret := os.Getenv("UI_SECRET")
 	c, err := r.Cookie("uisecret")
+	log.Info("UI_SECRET:", secret)
+	log.Infof("cookie secret: %+v",c)
 	if err != nil {
 		log.Errorf("Failed to get secret cookie, error: %v", err)
 	}

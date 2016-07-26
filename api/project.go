@@ -38,6 +38,7 @@ type ProjectAPI struct {
 type projectReq struct {
 	ProjectName string `json:"project_name"`
 	Public      bool   `json:"public"`
+	Name      string   `json:"name"`
 }
 
 const projectNameMaxLen int = 30
@@ -67,10 +68,11 @@ func (p *ProjectAPI) Prepare() {
 // Post ...
 func (p *ProjectAPI) Post() {
 	p.userID = p.ValidateUser()
-
+	// p.userID = 1
 	var req projectReq
 	var public int
 	p.DecodeJSONReq(&req)
+
 	if req.Public {
 		public = 1
 	}
@@ -89,7 +91,10 @@ func (p *ProjectAPI) Post() {
 		p.RenderError(http.StatusConflict, "")
 		return
 	}
-	project := models.Project{OwnerID: p.userID, Name: projectName, CreationTime: time.Now(), Public: public}
+	name_chinese := req.Name
+	log.Infof("req: %+v",req)
+	project := models.Project{OwnerID: p.userID, Name: projectName, CreationTime: time.Now(), Public: public, NameChinese: name_chinese}
+	log.Infof("project: %+v",project)
 	projectID, err := dao.AddProject(project)
 	if err != nil {
 		log.Errorf("Failed to add project, error: %v", err)
@@ -141,7 +146,6 @@ func (p *ProjectAPI) Get() {
 			p.CustomAbort(http.StatusUnauthorized, http.StatusText(http.StatusUnauthorized))
 		}
 	}
-
 	p.Data["json"] = project
 	p.ServeJSON()
 }
@@ -195,6 +199,7 @@ func (p *ProjectAPI) List() {
 		}
 		projectList[i].RepoCount = getRepoCountByProject(projectList[i].Name)
 	}
+	log.Infof("projectList: %+v", projectList)
 	p.Data["json"] = projectList
 	p.ServeJSON()
 }
