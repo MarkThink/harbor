@@ -120,4 +120,3 @@ func GetCustomerRepoList(repoList []string, tag string) ([]string) {
 	}
 	return resp
 }
-

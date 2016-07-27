@@ -16,14 +16,22 @@
         <table class="repository-table">
           <thead>
             <th width="20%"> // 'custom_name' | tr //</th>
-            <th width="40%">// 'tag_name' | tr //</th>
+            <th width="40%" style="text-align: center;">// 'tag_name' | tr //</th>
             <th width="15%" style="text-align: center;">// 'operation' | tr //</th>
           </thead>
           <tbody>
             <tr ng-repeat="custom in vm.customs">
               <td>//custom.name//</td>
               <td style="text-align: center;">//custom.tag//</td>
-              <td style="text-align: center;"><a href="javascript:void(0);" ng-click="vm.confirmToDelete( custom.id, custom.tag )" title="// 'delete_tag' | tr //" loading-progress hide-target="true" toggle-in-progress="vm.toggleInProgress[custom.tag]"><span class="glyphicon glyphicon-trash"></span></a></td>
+              <td style="text-align: center;">
+                <a href="javascript:void(0);"
+                  ng-click="vm.confirmToDelete( custom.id, custom.tag )"
+                  title="// 'delete_tag' | tr //"
+                  loading-progress hide-target="true"
+                  toggle-in-progress="vm.toggleInProgress[custom.tag]">
+                  <span class="glyphicon glyphicon-trash"></span>
+                </a>
+              </td>
             </tr>
           </tbody>
         </table>

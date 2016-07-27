@@ -60,10 +60,12 @@
    };
 
     vm.projectId = getParameterByName('project_id', $location.absUrl());
+    vm.customId = getParameterByName('custom_id', $location.absUrl());
     vm.retrieve();
 
     $scope.$on('$locationChangeSuccess', function() {
       vm.projectId = getParameterByName('project_id', $location.absUrl());
+      vm.customId = getParameterByName('custom_id', $location.absUrl());
       vm.filterInput = '';
       vm.retrieve();
     });
@@ -120,7 +122,7 @@
     function retrieve(){
       var pageId = vm.paginationConf.currentPage || 1;
       //默认请求第0页
-      ListRepositoryService(vm.projectId, vm.filterInput, pageId)
+      ListRepositoryService(vm.projectId, vm.filterInput, pageId, vm.customId)
         .success(getRepositoryComplete)
         .error(getRepositoryFailed);
     }

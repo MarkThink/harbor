@@ -3,9 +3,9 @@
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
-        
+
         http://www.apache.org/licenses/LICENSE-2.0
-        
+
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -13,9 +13,9 @@
     limitations under the License.
 */
 (function() {
-  
+
   'use strict';
-  
+
   angular
     .module('harbor.details')
     .directive('switchPaneProjects', switchPaneProjects);
@@ -24,16 +24,23 @@
 
   function SwitchPaneProjectsController($scope) {
     var vm = this;
- 
+
     $scope.$watch('vm.selectedProject', function(current, origin) {
       if(current){
         vm.projectName = current.name_chinese;
         vm.selectedProject = current;
       }
     });
-      
+
+    $scope.$watch('vm.selectedCustom', function(current, origin) {
+      if(current){
+        vm.customName = current.name;
+        vm.selectedCustom = current;
+      }
+    });
+
     vm.switchPane = switchPane;
-    
+
     function switchPane() {
       if(vm.isOpen) {
         vm.isOpen = false;
@@ -41,24 +48,25 @@
         vm.isOpen = true;
       }
     }
-    
+
   }
-  
+
   function switchPaneProjects() {
     var directive = {
       restrict: 'E',
       templateUrl: '/static/resources/js/components/details/switch-pane-projects.directive.html',
       scope: {
         'isOpen': '=',
-        'selectedProject': '='
+        'selectedProject': '=',
+        'selectedCustom': '='
       },
       controller: SwitchPaneProjectsController,
       controllerAs: 'vm',
       bindToController: true
     };
-    
+
     return directive;
-      
+
   }
-  
+
 })();
