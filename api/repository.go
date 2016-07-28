@@ -46,6 +46,7 @@ type RepositoryAPI struct {
 type repoPaging struct {
 	Pages    int `json:"pages"`
 	RepoList []string `json:"repoList"`
+	PageSize int `json:"pagesize"`
 	TotalItems int `json:"totalItems"`
 }
 
@@ -59,6 +60,8 @@ type repoReq struct {
 	PageNum int `json:"pageNum"`
 	Query string `json:q`
 }
+
+const PageSize int = 2
 
 // Get ...
 func (ra *RepositoryAPI) Get() {
@@ -168,19 +171,22 @@ func getSubPage(strs []string, pageNum int) (repoPaging) {
 	var repoPage repoPaging
 
 	switch {
-	case length >= (pageNum+1)*5:
-		repoPage.RepoList = strs[pageNum*5 : (pageNum+1)*5]
+	case length >= (pageNum+1)*PageSize:
+		repoPage.RepoList = strs[pageNum*PageSize : (pageNum+1)*PageSize]
 
-	case length < (pageNum+1)*5 && length >= (pageNum)*5:
-		repoPage.RepoList = strs[pageNum*5 : length]
+	case length < (pageNum+1)*PageSize && length >= (pageNum)*PageSize:
+		repoPage.RepoList = strs[pageNum*PageSize : length]
 	}
 
-  repoPage.TotalItems = length
+  	repoPage.TotalItems = length
+	repoPage.PageSize = PageSize
 
-	if length % 5==0{
-		repoPage.Pages = length/5
+	log.Info("repoTotal:",length)
+
+	if length % PageSize==0{
+		repoPage.Pages = length/PageSize
 	}else{
-		repoPage.Pages = length/5+1
+		repoPage.Pages = length/PageSize+1
 	}
 	log.Info("repoPages: ", repoPage.Pages)
 	log.Info("repoList: ", repoPage.RepoList)
