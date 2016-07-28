@@ -46,6 +46,7 @@ type RepositoryAPI struct {
 type repoPaging struct {
 	Pages    int `json:"pages"`
 	RepoList []string `json:"repoList"`
+	PageSize int `json:"pagesize"`
 	TotalItems int `json:"totalItems"`
 }
 
@@ -178,6 +179,7 @@ func getSubPage(strs []string, pageNum int) (repoPaging) {
 	}
 
   	repoPage.TotalItems = length
+	repoPage.PageSize = PageSize
 
 	log.Info("repoTotal:",length)
 

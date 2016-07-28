@@ -132,6 +132,7 @@
       vm.repositories = data.repoList || [];
       vm.paginationConf.totalItems = data.totalItems || 1;
       vm.paginationConf.numberOfPages =  data.pages || 1;
+      vm.paginationConf.itemsPerPage = data.pagesize || 5;
       $scope.$broadcast('refreshTagsAndLabels', true);
     }
 
