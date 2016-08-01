@@ -1,8 +1,8 @@
 #harbor本地调试部署环境搭建-使用SSL证书(registry.51yixiao.com)
 
 ##Setup1.获取本机IP - 此处IP地址 192.168.1.22
-```
-ifconfig | grep 'inet'
+```sh
+$ ifconfig | grep 'inet'
 
 	inet6 ::1 prefixlen 128
 	inet 127.0.0.1 netmask 0xff000000
@@ -14,8 +14,8 @@ ifconfig | grep 'inet'
 
 ##Setup2.更新本机shell环境配置
 
-```
-vi ~/.zshrc
+```sh
+$ vi ~/.zshrc
 
 #env begin
 export MYSQL_HOST=127.0.0.1
@@ -53,14 +53,14 @@ export TOKEN_URL=http://192.168.1.22:8080
 
 ##Setup3.更新IP配置
 
-```
-vi /etc/hosts
+```sh
+$ vi /etc/hosts
 192.168.1.22	registry.51yixiao.com registry ui jobservice
 ```
 
 修改Nginx环境配置
-```
-vi ./config/nginx/nginx.conf
+```sh
+$ vi ./config/nginx/nginx.conf
 
 upstream ui {
     #server ui:80;
@@ -69,8 +69,8 @@ upstream ui {
 ```
 
 修改registry环境配置
-```
-vi ./config/registry/config.yml
+```sh
+$ vi ./config/registry/config.yml
 endpoints:
   - name: harbor
     disabled: false
@@ -82,38 +82,38 @@ endpoints:
 
 ##Setup4.启动基础容器
 
-```
-cd local
-mkdir -p log
-mkdir -p data/registry
-mkdir -p data/mysql
-mkdir -p data/job_logs
+```sh
+$ cd local
+$ mkdir -p log
+$ mkdir -p data/registry
+$ mkdir -p data/mysql
+$ mkdir -p data/job_logs
 
-#docker-compose-local.yml 路径记得修改
-docker-compose -f docker-compose-local.yml up -d
+# docker-compose-local.yml 路径记得修改
+$ docker-compose -f docker-compose-local.yml up -d
 
-docker-compose -f docker-compose-local.yml down
+$ docker-compose -f docker-compose-local.yml down
 ```
 ##Setup5.修改代码配置
-```
-vi ../../job/config/config.go:83
+```sh
+$ vi ../../job/config/config.go:83
 
 #configPath := os.Getenv("CONFIG_PATH")
 #configPath := os.Getenv("JOB_CONFIG_PATH")
 
-vi ../../service/token/authutils.go:36
+$ vi ../../service/token/authutils.go:36
 #privateKey = "/etc/ui/private_key.pem"
 privateKey = "/works/goProject/src/github.com/vmware/harbor/Deploy/local/config/ui/private_key.pem"
 ```
 
 ##Setup6.启动harborUI/Job
-```
-cd ../../
-cp ./ui/* .
-bee run harborUI
+```sh
+$ cd ../../
+$ cp ./ui/* .
+$ bee run harborUI
 
-cd jobservice
-bee run jobService
+$ cd jobservice
+$ bee run jobService
 ```
 
 
