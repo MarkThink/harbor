@@ -8,6 +8,7 @@ CONFIG_PATH=/etc/ui/app.conf
 HARBOR_REG_URL=hub.hsjry.com
 HARBOR_ADMIN_PASSWORD=abc123
 HARBOR_URL=http://hub.hsjry.com
+CONSOLE_WEB_URL=http://localhost:3000
 AUTH_MODE=db_auth
 LDAP_URL=ldaps://ldap.mydomain.com
 LDAP_BASE_DN=uid=%s,ou=people,dc=mydomain,dc=com
