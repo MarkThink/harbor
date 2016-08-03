@@ -31,7 +31,7 @@ http:
 auth:
   token:
     issuer: registry-token-issuer
-    realm: https://registry.51yixiao.com/service/token
+    realm: https://hub.hsjry.com/service/token
     rootcertbundle: /etc/registry/root.crt
     service: token-service
 

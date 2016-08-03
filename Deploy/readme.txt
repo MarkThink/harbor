@@ -1,3 +1,6 @@
+
+
+
 mkdir -p log
 mkdir -p data/registry
 mkdir -p data/mysql

@@ -10,5 +10,5 @@ MAX_JOB_WORKERS=3
 LOG_LEVEL=debug
 LOG_DIR=/var/log/jobs
 GODEBUG=netdns=cgo
-EXT_ENDPOINT=https://registry.51yixiao.com
+EXT_ENDPOINT=https://hub.hsjry.com
 TOKEN_URL=http://ui

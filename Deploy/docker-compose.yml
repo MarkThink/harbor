@@ -30,7 +30,7 @@ services:
     build: ./db/
     restart: always
     volumes:
-      - /data/database:/var/lib/mysql
+      - /data/mysql:/var/lib/mysql
     env_file:
       - ./config/db/env
     depends_on:
