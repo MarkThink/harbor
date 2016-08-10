@@ -10,5 +10,5 @@ MAX_JOB_WORKERS=3
 LOG_LEVEL=debug
 LOG_DIR=/var/log/jobs
 GODEBUG=netdns=cgo
-EXT_ENDPOINT=https://hub.hsjry.com
+EXT_ENDPOINT=https://docker-registry.caicloudprivatetest.com
 TOKEN_URL=http://ui

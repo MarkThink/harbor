@@ -11,12 +11,4 @@ jobservice/test
 Deploy/local/data
 Deploy/local/log
 jobservice/jobservice
-
-# ref:
-# http://stackoverflow.com/questions/107701/how-can-i-remove-ds-store-files-from-a-git-repository
-
-# Remove existing files from the repository:
-# $ find . -name .DS_Store -print0 | xargs -0 git rm -f --ignore-unmatch
-
-# for Mac OS X
-.DS_Store
+Deploy/local/config/nginx/cert/hsjry.*
