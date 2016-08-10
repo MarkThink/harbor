@@ -103,7 +103,7 @@ func ProjectExists(nameOrID interface{}) (bool, error) {
 func GetProjectByID(id int64) (*models.Project, error) {
 	o := GetOrmer()
 
-	sql := `select p.project_id, p.name, u.username as owner_name, p.owner_id, p.creation_time, p.update_time, p.public  
+	sql := `select p.project_id, p.name, u.username as owner_name, p.owner_id, p.creation_time, p.update_time, p.public
 		from project p left join user u on p.owner_id = u.user_id where p.deleted = 0 and p.project_id = ?`
 	queryParam := make([]interface{}, 1)
 	queryParam = append(queryParam, id)
@@ -175,9 +175,9 @@ func ToggleProjectPublicity(projectID int64, publicity int) error {
 // 2. the prject is public or the user is a member of the project
 func SearchProjects(userID int) ([]models.Project, error) {
 	o := GetOrmer()
-	sql := `select distinct p.project_id, p.name, p.public 
-		from project p 
-		left join project_member pm on p.project_id = pm.project_id 
+	sql := `select distinct p.project_id, p.name, p.public
+		from project p
+		left join project_member pm on p.project_id = pm.project_id
 		where (pm.user_id = ? or p.public = 1) and p.deleted = 0`
 
 	var projects []models.Project
@@ -185,7 +185,7 @@ func SearchProjects(userID int) ([]models.Project, error) {
 	if _, err := o.Raw(sql, userID).QueryRows(&projects); err != nil {
 		return nil, err
 	}
-
+	log.Infof("projects: %+v", projects)
 	return projects, nil
 }
 
@@ -193,9 +193,10 @@ func SearchProjects(userID int) ([]models.Project, error) {
 func GetUserRelevantProjects(userID int, projectName string) ([]models.Project, error) {
 	o := GetOrmer()
 	sql := `select distinct
-		p.project_id, p.owner_id, p.name,p.creation_time, p.update_time, p.public, pm.role role 
-	 from project p 
+		p.project_id, p.owner_id, p.name,p.creation_time, p.update_time, p.public, d.name as name_chinese, pm.role role
+	 from project p
 		left join project_member pm on p.project_id = pm.project_id
+		inner join project_desc d on p.project_id = d.project_id
 	 where p.deleted = 0 and pm.user_id= ?`
 
 	queryParam := make([]interface{}, 1)
@@ -210,6 +211,7 @@ func GetUserRelevantProjects(userID int, projectName string) ([]models.Project, 
 	if err != nil {
 		return nil, err
 	}
+	log.Infof("r: %+v",r)
 	return r, nil
 }
 
