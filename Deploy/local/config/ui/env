@@ -5,9 +5,9 @@ MYSQL_PWD=root
 REGISTRY_URL=http://registry:5000
 UI_URL=http://ui
 CONFIG_PATH=/etc/ui/app.conf
-HARBOR_REG_URL=reg.mydomain.org
-HARBOR_ADMIN_PASSWORD=Harbor12345
-HARBOR_URL=http://reg.mydomain.org
+HARBOR_REG_URL=registry.51yixiao.com
+HARBOR_ADMIN_PASSWORD=abc123
+HARBOR_URL=http://registry.51yixiao.com
 AUTH_MODE=db_auth
 LDAP_URL=ldaps://ldap.mydomain.com
 LDAP_BASE_DN=uid=%s,ou=people,dc=mydomain,dc=com
